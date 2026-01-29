@@ -8,8 +8,10 @@ import movieRoutes from "./routes/movieRoutes.js";
 connectDB();
 
 const app = express();
-
+app.use(express.json())
 app.use("/api/movies", movieRoutes);
+
+
 
 const port = process.env.PORT || 5000;
 

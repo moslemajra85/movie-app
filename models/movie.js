@@ -12,7 +12,7 @@ const movieSchema = new mongoose.Schema({
     trim: true,
   },
 
-  descripiton: {
+  description: {
     type: String,
     required: true,
   },
