@@ -13,11 +13,15 @@ const getAllMovies = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
 
+    //we need to validate the request body
+    
     const course = new Movie(req.body);
 
     const result = await course.save();
     res.json(result);
   } catch (error) {
+
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

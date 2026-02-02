@@ -4,12 +4,14 @@ import express from "express";
 import colors from "colors";
 import connectDB from "./config/db.js";
 import movieRoutes from "./routes/movieRoutes.js";
+import genreRoutes from "./routes/genreRoutes.js";
 
 connectDB();
 
 const app = express();
 app.use(express.json())
 app.use("/api/movies", movieRoutes);
+app.use("/api/genres", genreRoutes)
 
 
 

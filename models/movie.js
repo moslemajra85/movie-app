@@ -17,6 +17,11 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
 
+  genre: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Genre"
+  },
+
   createAt: {
     type: Date,
     default: Date.now,

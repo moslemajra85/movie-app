@@ -1,7 +1,7 @@
 {
   "name": "movie-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "seeder.js",
   "type": "module",
   "scripts": {
     "start": "node server.js",
@@ -9,18 +9,25 @@
     "data:import": "node seeder.js -i",
     "data:destroy": "node seeder.js -d"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moslemajra85/movie-app.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moslemajra85/movie-app/issues"
+  },
+  "homepage": "https://github.com/moslemajra85/movie-app#readme",
   "description": "",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "colors": "^1.4.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.21.1",
+    "joi": "^18.0.2",
+    "joi-objectid": "^4.0.2",
+    "mongoose": "^9.1.5",
     "nodemon": "^3.1.11"
   }
 }
