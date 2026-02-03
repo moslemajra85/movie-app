@@ -1,4 +1,5 @@
 import Movie from "../models/movie.js";
+import { validateUser } from "../utils/validate.js";
 
 const getAllMovies = async (req, res) => {
   try {
@@ -12,15 +13,19 @@ const getAllMovies = async (req, res) => {
 
 const createMovie = async (req, res) => {
   try {
-
     //we need to validate the request body
-    
+
+    const { error } = validateUser(req.body);
+
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
     const course = new Movie(req.body);
 
     const result = await course.save();
     res.json(result);
   } catch (error) {
-
     console.log(error);
     res.status(500).json({ message: error.message });
   }
