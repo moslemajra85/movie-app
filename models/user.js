@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     maxLength: 512,
     trim: true,
   },
+
 });
 
 const User = mongoose.model("User", userSchema);
