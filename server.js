@@ -6,14 +6,23 @@ import connectDB from "./config/db.js";
 import movieRoutes from "./routes/movieRoutes.js";
 import genreRoutes from "./routes/genreRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import rentalRoutes from "./routes/rentalRoutes.js";
+
 
 connectDB();
 
 const app = express();
 app.use(express.json());
+
+// ============================================
+// 📍 API ROUTES
+// ============================================
 app.use("/api/movies", movieRoutes);
 app.use("/api/genres", genreRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api/rentals', rentalRoutes)
+
+
 
 const port = process.env.PORT || 5000;
 

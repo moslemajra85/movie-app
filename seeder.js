@@ -4,8 +4,10 @@ import colors from "colors";
 import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import bcrypt from "bcryptjs";
 import Movie from "./models/movie.js";
 import Genre from "./models/genre.js";
+import User from "./models/user.js";
 
 dotenv.config();
 
@@ -17,59 +19,75 @@ mongoose.connect(process.env.MONGO_URI);
 
 // Read JSON files
 const movies = JSON.parse(
-    fs.readFileSync(`${__dirname}/_data/movies.json`, "utf-8")
+  fs.readFileSync(`${__dirname}/_data/movies.json`, "utf-8"),
 );
 
 const genres = JSON.parse(
-    fs.readFileSync(`${__dirname}/_data/genres.json`, "utf-8")
+  fs.readFileSync(`${__dirname}/_data/genres.json`, "utf-8"),
+);
+
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/_data/users.json`, "utf-8"),
 );
 
 // Import into DB
 const importData = async () => {
-    try {
-        // Clean DB first
-        await Movie.deleteMany();
-        await Genre.deleteMany();
+  try {
+    // Clean DB first
+    await Movie.deleteMany();
+    await Genre.deleteMany();
+    await User.deleteMany();
 
-        // Import Genres
-        const savedGenres = await Genre.insertMany(genres);
+    // Import Users with hashed passwords
+    const usersWithHashedPasswords = await Promise.all(
+      users.map(async (user) => {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(user.password, salt);
+        return { ...user, password: hashedPassword };
+      }),
+    );
+    await User.insertMany(usersWithHashedPasswords);
 
-        const genreMap = {};
-        savedGenres.forEach((g) => {
-            genreMap[g.name] = g._id;
-        });
+    // Import Genres
+    const savedGenres = await Genre.insertMany(genres);
 
-        // Map movies to genre IDs
-        const moviesWithGenreIds = movies.map((movie) => {
-            return { ...movie, genre: genreMap[movie.genre] };
-        });
+    const genreMap = {};
+    savedGenres.forEach((g) => {
+      genreMap[g.name] = g._id;
+    });
 
-        await Movie.create(moviesWithGenreIds);
+    // Map movies to genre IDs
+    const moviesWithGenreIds = movies.map((movie) => {
+      return { ...movie, genre: genreMap[movie.genre] };
+    });
 
-        console.log("Data Imported...".green.inverse);
-        process.exit();
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    await Movie.create(moviesWithGenreIds);
+
+    console.log("Data Imported...".green.inverse);
+    process.exit();
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 // Delete data
 const deleteData = async () => {
-    try {
-        await Movie.deleteMany();
-        await Genre.deleteMany();
+  try {
+    await Movie.deleteMany();
+    await Genre.deleteMany();
+    await User.deleteMany();
 
-        console.log("Data Destroyed...".red.inverse);
-        process.exit();
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    console.log("Data Destroyed...".red.inverse);
+    process.exit();
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 if (process.argv[2] === "-i") {
-    importData();
+  importData();
 } else if (process.argv[2] === "-d") {
-    deleteData();
+  deleteData();
 }

@@ -6,6 +6,9 @@ const router = express.Router();
 
 router.post("/register", register);
 
+
+
+// post: /api/auth/login
 router.post("/login", login);
 
 export default router;
